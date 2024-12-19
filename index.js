@@ -5,7 +5,8 @@ require('dotenv').config()
 app.use(cors());
 app.use(express.json());
 const port = process.env.PORT || 3000;
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+
 
 app.get('/',(req, res) => {
   res.send("Job Portal Is Running in it's server side")
@@ -33,6 +34,13 @@ async function run() {
   app.get("/jobs",async(req,res)=>{
     const cursor = jobsCollection.find();
     const result = await cursor.toArray();
+    res.send(result);
+  })
+
+  app.get("/jobs/:id",async(req,res)=>{
+    const id = req.params.id;
+    const query = { _id: new ObjectId(id)}
+    const result = await jobsCollection.findOne(query);
     res.send(result);
   })
 
